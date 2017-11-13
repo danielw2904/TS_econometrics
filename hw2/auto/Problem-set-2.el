@@ -1,0 +1,34 @@
+(TeX-add-style-hook
+ "Problem-set-2"
+ (lambda ()
+   (TeX-run-style-hooks
+    "latex2e"
+    "article"
+    "art10"
+    "amsmath"
+    "fancyhdr"
+    "graphicx"
+    "mdframed"
+    "amssymb")
+   (TeX-add-symbols
+    "E")
+   (LaTeX-add-labels
+    "eq:1"
+    "eq:2"
+    "eq:3"
+    "eq:4"
+    "eq:5"
+    "eq:6"
+    "eq:7"
+    "eq:8"
+    "eq:final"
+    "1"
+    "part"
+    "part2"
+    "yw1"
+    "gamma(2)"
+    "gamma(1)"
+    "gamma(0)"
+    "gamma0final"))
+ :latex)
+

@@ -1,0 +1,275 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{graphicx}
+\usepackage{mdframed}
+\usepackage{amsmath,amssymb}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\begin{document}
+\chead{Mads Nielsen \& Daniel Winkler \\Time Series Econometrics Autumn 2017 \\ 201306163, 201701383}
+\begin{center}
+\textbf{Problem set 2}
+\end{center}
+\subsection*{Problem 1}
+
+Let $X = (X_1, X_2, ..., X_K)'$ be a random vector with mean zero and covariance matrix
+\begin{equation}
+  \label{eq:1}
+  \Gamma = \mathbb{E} XX'
+\end{equation}
+
+Assume $\Gamma$ is singular. Then there exists an eigenvalue $\lambda_1 = 0$ of $\Gamma$ with corresponding eigenvector $v_1 = (v_{11}, v_{12}, ..., v_{1K})'$. We know that
+\begin{equation}
+  \label{eq:2}
+  \Gamma v_1 = \lambda_1 v_1 = \mathbf{0_K}
+\end{equation}
+  
+where $\mathbf{0_K}$ denotes the zero vector of length $K$. Henceforth it will be denoted by $\mathbf{0}$. It is equivalent to say that
+\begin{equation}
+  \label{eq:3}
+  \mathbb{E} XX'v_1 = \mathbf{0}.
+\end{equation}
+
+We can multiply $v_1'$ from the left to get the variance of $v_1'X$.
+\begin{equation}
+\begin{split}
+  \label{eq:4}
+  \mathbb{E} v_1'XX'v_1 &= \mathbb{E} (v_1'X)(v_1'X)' = Var(v_1'X)\\
+  &= v_1'\mathbf{0} = 0
+\end{split}
+\end{equation}
+
+Since the variance is zero, we conclude that $v_1'X$ is deterministic and thus equal to a constant $d$. Thus we find
+\begin{equation}
+  \label{eq:5}
+  v_1'X = v_{11} X_1 + v_{12} X_2 + \dots + v_{1K} X_K = d
+\end{equation}
+
+We can rearrange (\ref{eq:5}) to
+
+\begin{equation}
+  \label{eq:6}
+  d - v_{1j} X_j = v_{11} X_1 + \dots + v_{1j-1} X_{j-1} + v_{1j+1}X_{j+1}+ \dots + v_{1K} X_K, \ j \in (2, K-1)
+\end{equation}
+Without loss of generality $j$ can be equal to $1$ or $K$ as well by deducting the appropriate $v$ and $X$ instead when moving from~(\ref{eq:5}) to (\ref{eq:6}). Now divide by $v_{1j}$ and define $\alpha_i := - \frac{v_{1i}}{v_{1j}}$ for $i = 1, ..., K$. It follows that $\alpha_j = -1$. Thus
+\begin{equation}
+  \label{eq:7}
+ X_j + \frac{d}{v_{1j}}  = \alpha_1 X_1 + \alpha_2 X_2 + \dots + \alpha_K X_K
+\end{equation}
+
+Now let $c := -\frac{d}{v_{1j}}$. Then
+\begin{equation}
+  \label{eq:8}
+  X_j = c + \alpha_1 X_1 + \alpha_2 X_2 + \dots + \alpha_{j-1} X_{j-1} + \alpha_{j+1} X_{j+1}+ \dots + \alpha_K X_K
+\end{equation}
+Therefore $X_j$ can be expressed as a deterministic linear function of the other variables. This function is only dependent on the eigenvector corresponding to eigenvalue $0$ of the covariance matrix $\Gamma$ and the other variables. 
+
+\subsubsection*{Problem 2}
+$x_t$ is a stationary process that satisfies the AR(p) difference equation 
+\begin{align*}
+x_t = \phi_1x_{t-1}+....+\phi_px_{t-p}+\varepsilon_t,\quad \varepsilon_t \sim WN(0,\sigma^2)
+\end{align*}
+We want to find the best linear predictor. So we want to find an estimate of the $\phi$s that minimize the expected squared difference between observed and predicted values:
+\begin{align*}
+\min_{\hat \phi} \E \left(x_{t+m}-\hat{x}_{t+m}\right)^2 
+\end{align*}
+for $m\geq1$.
+Where $\hat{x}_{t+m}=\sum^p_{j=1}\hat\phi_{j}x_{t+1-j}$. We minimize this and obtain the best linear prediction for stationary processes, given by the orthogonality condition: 
+\begin{align*}
+\E[(x_{t+m}-\hat x_{t+m})x_k]=0
+\end{align*}
+We can see by this equation that our errors and regressors are orthogonal in the minimum variance linear predictor. This is in line with the projection theorem. 
+We want to see if the following is indeed the best linear predictor:
+\begin{align*}
+\hat{x}_{t+1}=\phi_1 x_t+\phi_{t-1}x_{t-2}+...+\phi_px_{t-p}
+\end{align*}
+\begin{align*}
+\varepsilon_{t+1}=x_{t+1}-\phi_1 x_t+\phi_{t-1}x_2+...\phi_px_{t-p}
+\end{align*}
+The erros should be orthogonal to the regressors, to minimize the distance c.f. the projection theorem. This makes intuitive sense, because the closest route from prediction to realized values is if the errors are orthogonal. So it must hold that all the $x_{t-i}$ ($i=0, \dots, p$) are uncorrelated with $\varepsilon_{t+1}$
+\begin{align*}
+\E [\varepsilon_{t+1},x_t,x_{t-1}, \dots, x_{t-p}]=0 
+\end{align*}
+We know that the process of $x_t$ can be written as an infinite sum of previous and current error terms:
+\begin{align*}
+\E x_t=\sum^\infty_{i=0}\phi^i\varepsilon_{t-i}=f(\varepsilon_t,\varepsilon_{t-1},....,\varepsilon_n)
+\end{align*}
+And by definition of $\varepsilon_t$ $x_{t-i}$ for $i=0, ..., p$ is therefore not correlated with $\varepsilon_{t+1}$. We know that $\varepsilon_t$ is not serially correlated, so $\E[\varepsilon_{t}\varepsilon_{t-i}]$ for $i=1, \dots, \infty$ equals zero and thus $\E[\varepsilon_{t+1} \left(\sum^\infty_{i=0}\phi^i\varepsilon_{t-i}\right)] = 0$.
+Because of this we can express the orthogonality condition as:
+\begin{align*}
+\E x_{t+1-k}(x_{t+1}-\sum_{j=1}^p \phi_{j} x_{t+1-j})&=0, \quad k=1,\dots,p\\
+\gamma(k)-\sum_{j=1}^p \phi_{j}\gamma(k-j)&=0
+\end{align*}
+Where $\phi_{j}$ are the coefficients, $\boldsymbol{\gamma_p}=(\gamma(1),..,\gamma(p))'$ and $\boldsymbol{\phi_p}=(\phi_1,.....,\phi_p)'$:
+\begin{align*}
+\boldsymbol{\gamma_p} = \Gamma_p\boldsymbol{\phi_p}
+\end{align*}
+Where $\Gamma_p=\{\gamma(i-j)\}_{j,k=1}^p$ is an $p \times p$ matrix. If $\Gamma$ is non-singular the elements in $\boldsymbol{\phi_p}$ are unique. The coefficient vector is thus given by
+\begin{align*}
+\boldsymbol{\phi_p}=\Gamma_p^{-1}\boldsymbol{\gamma_p}
+\end{align*}
+Prediction is given by $\hat{x}_{t+1}=\sum^p_{j=1}\hat \phi_jx_{t+1-j}$, inserting our estimated best linear prediction for $\hat \phi_j=\phi_j$ we obtain:
+\begin{align}
+\label{eq:final}
+\hat{x}_{t+1}=\sum^p_{j=1}\phi_jx_{t+1-j}=\hat{x}_{t+1}=\phi_1x_t+ \phi_2 x_{t-1} + \dots+\phi_{p} x_{t+1-p}
+\end{align}
+We have thus shown that we can obtain the $\phi_j$ by the orthogonality condition. Using these in (\ref{eq:final}) makes it the best linear predictor. 
+The one step ahead prediction error is given by: 
+\begin{align*}
+\E(x_{t+1}-\hat{x}_{t+1})^2&=\E(x_{t+1}-\boldsymbol{\phi_p}'\boldsymbol x_p)^2
+\end{align*}
+Where $\boldsymbol x_p = (x_t, x_{t-1}, \dots, x_{t+1-p})'$. 
+Inserting for $\boldsymbol{\phi_p}$ the equation reads:
+\begin{align*}
+& = \E(x_{t+1}-\boldsymbol\gamma_p'\Gamma^{-1}_p\boldsymbol x_p)^2\\
+& = \E(x^2_{t+1}-2\boldsymbol\gamma_p'\Gamma^{-1}_p \boldsymbol x_p  x_{t+1} +\boldsymbol\gamma_p'\Gamma^{-1}_p \boldsymbol x_p \boldsymbol x_p'\Gamma^{-1}_p \boldsymbol\gamma_p)\\
+& =\gamma(0) - 2\boldsymbol\gamma_p'\Gamma^{-1}_p \boldsymbol \gamma_p+\boldsymbol\gamma_p'\Gamma^{-1}_p\Gamma_p\Gamma^{-1}_p\boldsymbol\gamma_p\\
+& =\gamma(0) - \boldsymbol\gamma_p'\Gamma^{-1}_p\boldsymbol\gamma_p
+\end{align*}
+The variance prediction error is thus determined by a function of the variances of time t and the covariances of the lags. So the observed covariances help us explain future values of t. 
+
+\subsubsection*{Problem 3}
+We have a AR(2) model given by
+\begin{align*}
+x_t=\frac{16}{27}+\frac{4}{9}x_{t-1}-\frac{1}{27}x_{t-2}+\varepsilon_t
+\end{align*}
+We want the input-output representation given by(if the process is causal): 
+\begin{align*}
+x_t=\sum^\infty_{j=-\infty}\psi_jB^j\varepsilon_t=\psi(B)\varepsilon_t
+\end{align*}
+Using the lag operator to solve for $x_t$
+\begin{align*}
+& x_t-\frac{4}{9}Bx_t+\frac{1}{27}B^2x_t=\frac{16}{27}+\varepsilon_t\\
+& =x_t(1-\frac{4}{9}B+\frac{1}{27}B^2)=\varepsilon_t+\frac{16}{27}
+\end{align*}
+\begin{equation}\label{1}
+=x_t=\frac{\varepsilon_t}{1-\frac{4}{9}B+\frac{1}{27}B^2}+\frac{1}{1-\frac{4}{9}B+\frac{1}{27}B^2}\frac{16}{27}
+\end{equation}
+However we are now left with a polynomial in the denominator. I am defining B as a number(even though it is a lag operator). So for $\Phi(B)=1-\frac{4}{9}B+\frac{1}{27}B^2=0$ we introduce $\lambda=\frac{1}{B}$ and thus writes this as
+\begin{align*}
+\phi(B)\lambda^2=\lambda^2-\frac{4}{9}\lambda+\frac{1}{27}=0
+\end{align*}
+We can solve this polynomial by the "L\"osungsformel"
+\begin{align*}
+& \lambda_{1,2}=-\frac{p}{2}\pm \sqrt{\frac{p^2}{4}-q}\\
+& p=-\frac{4}{9}\\
+& q=\frac{1}{27}\\
+& \lambda_{1,2}=-\frac{-\frac{4}{9}}{2}\pm \sqrt{\frac{-\frac{4}{9}^2}{4}-\frac{1}{27}}=\frac{2}{9}\pm \frac{1}{9}
+\end{align*}
+We get the roots $[\frac{1}{3},\frac{1}{9}]$. So now i can express B as: 
+\begin{align*}
+(1-\frac{1}{9}B)(1-\frac{1}{3}B)=0
+\end{align*}
+Inserting in (\ref{1}) gives me: 
+\begin{equation*}
+x_t=\frac{\varepsilon_t}{(1-\frac{1}{9}B)(1-\frac{1}{3}B)}+\frac{\frac{16}{27}}{(1-\frac{1}{9}B)(1-\frac{1}{3}B)}
+\end{equation*}
+We want to find a representation of $\frac{1}{(1-\frac{1}{9}B)(1-\frac{1}{3}B)}$. For this we can use the partial fraction decomposition, to split the fraction in terms of a and c: 
+\begin{align*}
+& \frac{1}{(1-\frac{1}{9}B)(1-\frac{1}{3}B)}\\
+= & \frac{a}{1-\frac{1}{9}B}+\frac{c}{1-\frac{1}{3}B}\\
+= & \frac{a(1-\frac{1}{3}B)+c(1-\frac{1}{9}B)}{(1-\frac{1}{9}B)(1-\frac{1}{3}B) }\\
+= & \frac{a(1-\frac{1}{3}B)+c(1-\frac{1}{9}B)}{(1-\frac{1}{9}B)(1-\frac{1}{3}B) }\\
+= & \frac{a+c-(\frac{1}{3}a+\frac{1}{9}c)B}{(1-\frac{1}{9}B)(1-\frac{1}{3}B) }
+\end{align*}  
+From our denominator we can see two conditions. First of all $a+c=1$, furthermore $\frac{1}{3}a+\frac{1}{9}c=0$. This leaves us with two equations with two unknowns: 
+\begin{align*}
+& a+c=1\\
+& \frac{1}{3}a+\frac{1}{9}c=0
+\end{align*}
+Solving the system: 
+\begin{align*}
+& c=(1-a)\\
+& =\frac{1}{3}a+\frac{1}{9}(1-a)=0\\
+& = \frac{1}{3}a+\frac{1}{9}-\frac{1}{9}a=0\\
+& = \frac{2}{9}a=-\frac{1}{9}\\
+& a=-\frac{1}{2}\\
+& c=1\frac{1}{2}
+\end{align*}
+We can thus write: 
+\begin{align}\label{part}
+\frac{1}{(1-\frac{1}{9}B)(1-\frac{1}{3}B)}=\frac{-\frac{1}{2}}{1-\frac{1}{9}B}+\frac{1\frac{1}{2}}{1-\frac{1}{3}B}\\
+\end{align}
+So because our backlag operator does not change constants, the first part of the equation can be written as: $\frac{\frac{16}{27}}{1-\frac{4}{9}+\frac{1}{27}}=1$
+\begin{equation}\label{part2}
+x_t=1+\frac{1}{1-\frac{4}{9}B+\frac{1}{27}B^2}\varepsilon_t
+\end{equation}
+Note that:$\frac{1}{1-\phi B}=\sum_{j=0}^\infty \phi^j B^j$. We can insert (\ref{part}) into (\ref{part2}) and the solution to the problem is thus: 
+\begin{align*}
+& =1+1\frac{1}{2}\sum^\infty_{j=0}(\frac{1}{3})^j\varepsilon_{t-j}-\frac{1}{2}\sum^\infty_{j=0}(\frac{1}{9})^j\varepsilon_{t-j}\\
+& =1+\sum^\infty_{j=0}\underbrace{[1\frac{1}{2}(\frac{1}{3})^j-\frac{1}{2}(\frac{1}{9})^j]}_{\text{$\Psi_j$}}\varepsilon_{t-j}
+\end{align*}
+\subsubsection*{Problem 4}
+In order to determine the variance, we have to use the yule-walker equations.  The YW equations relate the AR model parameters to the autocovariance of the random process. We can use the YWE to estimate the autoregressive parameters from data, by using the autocovariance relationship. 
+As the problem defines an AR(2) process:
+\begin{equation*}
+x_t-\phi_1x_{t-1}-\phi_2x_{t-2}=\varepsilon_t
+\end{equation*}
+Multiply by $x_{t-j}$ and take expectations:
+\begin{equation*}
+\E(x_{t-j}x_t)-\phi_1\E(x_{t-j}x_{t-1})-\phi_2\E(x_{t-2})=\E(x_{t-j}\varepsilon_t)
+\end{equation*}
+The resulting system of linear equation for $j=0, 1, 2$ is:
+\begin{align}\label{yw1}
+& \gamma(0)-\phi_1\gamma(-1)-\phi_2\gamma(-2)=\sigma^2\\
+& \gamma(1)-\phi_1\gamma(0)-\phi_2\gamma(-1)=0\\
+& \gamma(2)-\phi_1\gamma(1)-\phi_2\gamma(0)=0\label{gamma(2)}
+\end{align}
+Where the covariance with $h$ periods apart is denoted by $\gamma(h)$. $E(x_{t-j} \varepsilon_t)$ is equal to $\sigma^2$ when $j=0$, otherwise it is equal to zero, because $\varepsilon_t$ is serially uncorrelated (see Problem 2). In the above relationship (-1)=(1) and (-2)=(2), because the point in time is not important w.r.t the autocovariance function, what is important is the lagged periods(h).\\[0.1in]
+We want to find the variance of the AR(2) process. In period t $\E (x_t x_t-j)$, is equal to the variance because $cov(x_t x_t)=var(x)$.
+As we are dealing with an AR(2) process, in general we can write $\gamma(h)$ as a function of the previous two covariances:
+\begin{align*}
+\gamma(h)=\phi_1\gamma(h-1)+\phi_2\gamma(h-2)
+\end{align*}
+Setting h=1 gives us: 
+\begin{align}
+& \gamma(1)=\phi_1\gamma(0)+\phi_2\gamma(1)\\
+& \gamma(1)=\frac{\phi_1\gamma(0)}{1-\phi_2} \label{gamma(1)}
+\end{align}
+If we solve (\ref{gamma(2)}) for $\gamma(2)$ we obtain: 
+\begin{align*}
+\gamma(2)=\phi_1\gamma(1)+\phi_2\gamma(0)
+\end{align*}
+Inserting into (\ref{yw1}) yields: 
+\begin{align*}
+\gamma(0)=\phi_1\gamma(1)+\phi_2(\phi_1\gamma(1)+\phi_2\gamma(0))+\sigma^2_\varepsilon
+\end{align*}
+Solving for $\gamma(0)$
+\begin{align}
+\gamma(0)-\phi^2_2\gamma(0)=\phi_1\gamma(1)+\phi_2\phi_1\gamma(1)+\sigma^2_\varepsilon \label{gamma(0)}
+\end{align}
+From (\ref{gamma(1)}) we got $\gamma(1)$ which is inserted into \ref{gamma(0)}:
+\begin{align*}
+& \gamma(0)-\phi^2_2\gamma(0)=\frac{\phi_1^2\gamma(0)}{1-\phi_2}+\phi_2\frac{\phi_1^2\gamma(0)}{1-\phi_2}+\sigma^2_\varepsilon\\
+& \gamma(0)(1-\phi_2)-\phi^2_2\gamma(0)(1-\phi_2)=\phi^2_1\gamma(0)+\phi_2\phi^2_1\gamma(0)+(1-\phi_2)\sigma^2_\varepsilon\\
+& -\phi^2_1\gamma(0)-\phi_2\phi^2_1\gamma(0)+\gamma(0)(1-\phi_2)-\phi^2_2\gamma(0)(1-\phi_2)=(1-\phi_2)\sigma^2_\varepsilon\\
+& \gamma(0)(-\phi^2_1-\phi_2\phi^2_1+(1-\phi_2)-\phi^2_2(1-\phi_2))=(1-\phi_2)\sigma^2_\varepsilon\\
+& \gamma(0)(-\phi^2_1-\phi_2\phi^2_1+1-\phi_2-\phi^2_2+\phi_2^3)=(1-\phi_2)\sigma^2_\varepsilon\\
+& \gamma(0)=\frac{(1-\phi_2)\sigma^2_\varepsilon}{(-\phi^2_1-\phi_2\phi^2_1+1-\phi_2-\phi^2_2+\phi_2^3)}\\
+\end{align*}
+Rewriting : $(-\phi^2_1-\phi_2\phi^2_1+1-\phi_2-\phi^2_2+\phi_2^3)$ as $(1+\phi_2)((1+\phi_2)^2-\phi^2_1)$ and we end up with: 
+\begin{align}\label{gamma0final}
+\gamma(0)=\frac{(1-\phi_2)\sigma^2_\varepsilon}{(1+\phi_2)((1+\phi_2)^2-\phi^2_1)}
+\end{align}
+If we have an AR(1) model, than $\phi_2=0$ and then this reduces to $\gamma(0)=\frac{\sigma^2_\varepsilon}{1-\phi^2_1}$ which we've shown in problem set 1. 
+Using these initial conditions we can derive higher order covariances: 
+\begin{align*}
+\gamma(h)=\phi_1\gamma(h-1)+\phi_2\gamma(h-2)
+\end{align*} 
+So if we set $h=3,4,5,\dots$ we get: 
+\begin{align*}
+& \gamma(3)=\phi_1\gamma(2)+\phi_2\gamma(1)\\
+& \gamma(4)=\phi_1\gamma(3)+\phi_2\gamma(2)\\
+& \gamma(5)=\phi_1\gamma(4)+\phi_2\gamma(3)\\
+\end{align*}
+From this it is clear that by iterating over time, we can obtain all covariances of an AR(2) system by just knowing the initial conditions derived above. If we insert \ref{gamma0final} into \ref{gamma(1)} we can see that $\gamma(h)$ can be expressed as functions of $\phi_{1,2}$ and $\sigma_\varepsilon$. 
+\end{document}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,279 @@
+\documentclass[11pt]{article}
+        \usepackage[T1]{fontenc} % Font styles
+	\usepackage[utf8]{inputenc} % Special characters "ä, ö, ü, ß" made possible
+        \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry} % page setup
+        \usepackage[doublespacing]{setspace} % set line spacing
+        \usepackage{multicol} % multiple columns: \begin{multicols}{number}....\end{multicols}
+        \usepackage{csquotes} % \blockquote{} command for long quotes
+	\usepackage[german]{babel} % Language (deutsch: ngerman)
+	\usepackage{amsmath} % Add formulas to document
+	\usepackage{graphicx} % Add graphics to document
+        \usepackage{cancel} % Cancel out terms in equations
+        \usepackage{amssymb}
+\usepackage{xcolor} % Color output [see commands]
+        \usepackage{array} % keep equations aligned by inserting & at the alignment point
+        \usepackage{longtable} % tables longer than one page
+        \usepackage{booktabs} % fancy tables from r
+        \usepackage{dcolumn} % also r tables
+        \usepackage{rotating} % rotated tables
+        \usepackage[toc,page]{appendix} % appendix
+        \usepackage{fancyhdr} % header and footer
+            \pagestyle{fancy}
+            \rhead{Chapter \leftmark}
+            \renewcommand\headrulewidth{1pt}
+            \setlength{\headheight}{14pt}
+	\usepackage[style=authoryear, backend=bibtex]{biblatex} % citation that works 
+            \bibliography{bibliography} % declare bibliography file name without .bib extention
+% Declaration of commands
+            \newcommand{\lagr}{nn\mathcal{L}} % \lagr for lagrangian [I need this all the time so makes sense to declare shortcut]
+            \newcommand\Ccancel[2][black]{\renewcommand\CancelColor{\color{#1}}\cancel{#2}} % cancel with colors \Ccancel[color]{...}; default: black
+
+\pagenumbering{arabic}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+  \section*{3/4} % there is some stuff with titlepage setup around but I find this to be more convenient as you can do whatever you want here. Add date/time, Authornames, space...
+  \textbf{}\\
+  \large{Daniel Winkler}
+  
+  {\large \today\par}
+\end{center}
+
+\section{Construction of two random variables with given covariance}
+\label{sec:constr-two-rand}
+
+
+
+Let $Z_{1,t},\ Z_{2,t}$ be i.i.d. $N(0,1)$. We want to construct two variables $X_t,\ Y_t$ s.t.
+\begin{equation}
+  \label{eq:1}
+  \begin{bmatrix}
+    X\\
+    Y
+  \end{bmatrix} \sim
+  N \left(
+    \begin{bmatrix}
+      \mu_x\\
+      \mu_y
+    \end{bmatrix},
+    \begin{bmatrix}
+      \sigma^2_x & \sigma_{x,y}\\
+      \sigma_{x,y} & \sigma_y^2
+    \end{bmatrix}
+\right)
+\end{equation}
+
+Let $X \sim N(\mu_x, \sigma^2_x)$. Then:
+\begin{equation}
+  \label{eq:2}
+  \frac{X-\mu_x}{\sigma_x} \sim N(0,1) \equiv Z_{1,t}
+\end{equation}
+
+It follows that:
+\begin{equation}
+  \label{eq:3}
+  \mu_x + \sigma_x Z_{1,t} \sim N(\mu_x, \sigma^2_x)
+\end{equation}
+
+Now let $Z_{3,t} = \rho Z_{1,t} + \sqrt{1-\rho^2} Z_{2,t}$. We can show that this is also a $N(0,1)$:
+\begin{equation}
+  \label{eq:4}
+  \begin{split}
+    &\rho Z_{1,t} + \sqrt{1-\rho^2} Z_{2,t}\\
+    &=\rho N(0,1) + \sqrt{1-\rho^2} N(0,1)\\
+    &=N(0,\rho^2) + N(0, 1-\rho^2)
+  \end{split}
+\end{equation}
+As $Z_{1,t}$ and $Z_{2,t}$ are independent:
+\begin{equation}
+  \label{eq:5}
+    N(0,\rho^2) + N(0, 1-\rho^2) = N(0,1-\rho^2+\rho^2) = N(0,1)
+\end{equation}
+
+Thus:
+\begin{equation}
+  \label{eq:6}
+  \mu_y + \sigma_y Z_{3,t} \sim N(\mu_y, \sigma^2_y)
+\end{equation}
+
+We still need to show that $cov(X,Y) = \sigma_{x,y} = \sigma_x \sigma_y \rho$.
+\begin{equation}
+  \label{eq:7}
+  \begin{split}
+    cov(X,Y) &= \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]\\
+    &= \mathbb{E}[(X - \mu_x)(Y-\mu_y)]\\
+    &= \mathbb{E}[(\sigma_x Z_{1,t} + \mu_x - \mu_x)(\sigma_y (\rho Z_{1,t} + \sqrt{1-\rho^2} Z_{2,t}) + \mu_y - \mu_y)]\\
+    &= \sigma_x \sigma_y \mathbb{E}[\rho Z^2_{1,t} + \sqrt{1-\rho^2}Z_{1,t}Z_{2,t}]
+  \end{split}
+\end{equation}
+Lets look at the second part of the sum. $\sqrt{1-\rho^2}$ is a constant and can thus be taken out of the expectation. As $Z_{1,t}$ and $Z_{2,t}$ are independent:
+\begin{equation}
+  \label{eq:8}
+  \begin{split}
+    \mathbb{E}[Z_{1,t}Z_{2,t}] = \mathbb{E}[Z_{1,t}] \mathbb{E}[Z_{2,t}] = 0 
+  \end{split}
+\end{equation}
+where the last equality follows from the definition of the variables.
+Thus,
+\begin{equation}
+  \label{eq:9}
+  \begin{split}
+  &\sigma_x \sigma_y \mathbb{E}[\rho Z^2_{1,t} + \sqrt{1-\rho^2}Z_{1,t}Z_{2,t}]\\
+  &= \sigma_x \sigma_y \rho \mathbb{E}[Z^2_{1,t}]
+\end{split}
+\end{equation}
+As $Z^2_{1,t}$ is the square of one normally distributed variable, we know that $Z^2_{1,t} \sim \chi^2_1$. Since the expected value of a $\chi^2$ distributed variable is just its degrees of freedom $\mathbb{E}[Z^2_{1,t}] = 1$. Thus:
+\begin{equation}
+  \label{eq:10}
+  cov(X,Y) = \sigma_x \sigma_y \rho
+\end{equation}
+
+\section{Conditional Expectation and Variance}
+\label{sec:cond-expect-vari}
+
+\subsection{Conditional Expectation of Y|X}
+\label{sec:cond-expect}
+\begin{equation}
+  \label{eq:11}
+  \begin{split}
+    \mathbb{E}[Y|X] &= \mathbb{E}[\mu_y + \sigma_y (\rho Z_{1,t} + \sqrt{1-\rho^2} Z_{2,t})|X]\\
+    &= \mathbb{E}[\mu_y + \sigma_y (\rho \frac{X-\mu_x}{\sigma_x} + \sqrt{1-\rho^2} Z_{2,t})|X]\\
+  \end{split}
+\end{equation}
+$\mathbb{E}[\frac{X-\mu_x}{\sigma_x}|X] = \frac{X-\mu_x}{\sigma_x}$. Note that in this case the realization of $X$ is given, thus the fraction is a constant. $\mu_y,\ \sigma_y \text{ and } \rho$ are chosen constants and thus independent of $X$. Thus we get:
+\begin{equation}
+  \label{eq:12}
+  \begin{split}
+    &\mathbb{E}[\mu_y + \sigma_y (\rho \frac{X-\mu_x}{\sigma_x} + \sqrt{1-\rho^2} Z_{2,t})|X]\\
+    & = \mu_y + \sigma_y (\rho \frac{X-\mu_x}{\sigma_x} + \sqrt{1-\rho^2} \mathbb{E} [Z_{2,t}|X])
+  \end{split}
+\end{equation}
+Since $Z_{1,t},\ Z_{2,t}$ are independent and the parameters $\mu_x,\ \sigma_x$ are chosen independently of $Z_{2,t}$:
+\begin{equation}
+  \label{eq:13}
+  \mathbb{E}[Z_{2,t}|X]= \mathbb{E}[Z_{2,t}] = 0
+\end{equation}
+Thus,
+\begin{equation}
+  \label{eq:15}
+  \mathbb{E}[Y|X] = \mu_y + \sigma_y (\rho \frac{X-\mu_x}{\sigma_x}) = \mu_y + \sigma_y \sigma_x \rho \frac{X-\mu_x}{\sigma_x^2} = \mu_y + \sigma_{xy}\frac{X-\mu_x}{\sigma_x^2}
+\end{equation}
+
+\subsection{Conditional Variance of Y|X}
+\label{sec:cond-vari-yx}
+\begin{equation}
+  \label{eq:16}
+    Var(Y|X) = Var(\mu_y + \sigma_y (\rho \frac{X-\mu_x}{\sigma_x} + \sqrt{1-\rho^2} Z_{2,t})|X)
+\end{equation}
+As $\mu_y,\ \sigma_y,\ \rho$ and $\frac{X-\mu_x}{\sigma_x}|X$ are constants and thus have no variance:
+\begin{equation}
+  \label{eq:17}
+  = Var(\sigma_y \sqrt{1-\rho^2} Z_{2,t}|X) = Var(\sigma_y \sqrt{1-\rho^2} Z_{2,t})
+\end{equation}
+because of independence of $X$ and the constants as well as $Z_{2,t}$.
+\begin{equation}
+  \label{eq:18}
+  Var(\sigma_y \sqrt{1-\rho^2} Z_{2,t}) = \sigma_y^2 (1-\rho^2) Var(Z_{2,t}) = \sigma_y^2 - \sigma_y^2 \rho^2
+\end{equation}
+Multiplying and dividing the second part by $\sigma_x^2$ yields:
+\begin{equation}
+  \label{eq:19}
+  Var(Y|X) = \sigma_y^2 - \frac{\sigma_x^2 \sigma_y^2 \rho^2}{\sigma_x^2} = \sigma_y^2 - \frac{\sigma_{xy}^2}{\sigma_x^2}
+\end{equation}
+
+
+\section{Problem 5}
+\label{sec:problem-5}
+
+\begin{equation}
+  \label{eq:14}
+  \begin{split}
+    \gamma(h)&=\mathbb{E} (x_tx_{t+h})=\mathbb{E} [(U_1cos(\lambda t)+U_2sin(\lambda t))(U_1cos(\lambda [t+h])+U_2sin(\lambda [t+h])]\\
+    &= \mathbb{E} [U_1^2 cos(\lambda t)cos(\lambda(t+h)) + U_2^2 sin(\lambda t)sin(\lambda (t+h)) + \\
+    &\  U_1U_2 cos(\lambda t) sin(\lambda (t+h)) + U_2 U_1 sin(\lambda t) cos(\lambda (t+h))]
+  \end{split}
+\end{equation}
+
+Because $U_1,\ U_2$ are random variables they are independent from each other and from the other terms. Thus,
+
+\begin{equation}
+  \label{eq:20}
+  \begin{split}
+    &= \mathbb{E}[U_1^2] \mathbb{E} [cos(\lambda t)cos(\lambda(t+h))] + \mathbb{E}[U_2^2]\mathbb{E}[sin(\lambda t)sin(\lambda (t+h))] +\\
+    &\mathbb{E}[U_1U_2] \mathbb{E}[cos(\lambda t) sin(\lambda (t+h))] + \mathbb{E}[U_2 U_1]\mathbb{E}[sin(\lambda t) cos(\lambda (t+h))]\\
+    &= \mathbb{E}[U_1^2] \mathbb{E} [cos(\lambda t)cos(\lambda(t+h))] + \mathbb{E}[U_2^2]\mathbb{E}[sin(\lambda t)sin(\lambda (t+h))]
+  \end{split}
+\end{equation}
+By definition of $U_1,\ U_2$
+\begin{equation}
+  \label{eq:22}
+  = \sigma^2(\mathbb{E} [cos(\lambda t)cos(\lambda(t+h))] + \mathbb{E}[sin(\lambda t)sin(\lambda (t+h))])
+\end{equation}
+We can drop the expectation because non of the terms are random anymore.
+Using the product identities this can be rewritten as:
+\begin{equation}
+  \label{eq:25}
+  \begin{split}
+    &\sigma^2(\frac{1}{2}(cos(\lambda t - \lambda[t+h]) + cos(\lambda [t+h] + \lambda t)) + \\
+    &\quad \frac{1}{2} (cos(\lambda t - \lambda[t+h]) - cos(\lambda [t+h] + \lambda t)))\\
+    =& \frac{1}{2}\sigma^2 (cos(\lambda t - \lambda t + \lambda h) + cos(\lambda t - \lambda t + \lambda h)\\
+   =& \sigma^2cos(\lambda h)
+  \end{split}
+\end{equation}
+
+\subsubsection*{Problem 6}
+\label{sec:problem-6}
+
+Show that:
+\[
+  \int_{-\pi}^\pi e^{i(k-h)\lambda} d \lambda = \left\{
+    \begin{array}{ll}
+      2\pi,\ \text{if} \ k=h,\\
+      0,\ \text{otherwise}
+    \end{array}
+     \right.
+\]
+
+
+For $k \neq h$ we evaluate the indefinite integral:
+\begin{equation}
+  \label{eq:21}
+  \begin{split}
+    &\int  e^{i(k-h)\lambda} d \lambda\\
+    &= \int cos((k-h) \lambda) + i sin((k-h) \lambda) d \lambda\\
+    &= \int cos((k-h) \lambda) d \lambda + i \int sin((k-h)\lambda) d \lambda\\
+    &= \frac{sin((k-h) \lambda)}{k-h} - i \frac{cos((k-h) \lambda)}{k-h}
+  \end{split}
+\end{equation}
+Now we evaluate from $-\pi$ to $\pi$:
+\begin{equation}
+  \label{eq:23}
+  \begin{split}
+    &\left.  \frac{sin((k-h) \lambda)}{k-h} - i \frac{cos((k-h) \lambda)}{k-h} \right\vert_{-\pi}^\pi\\
+    &=  \frac{sin((k-h) \pi)}{k-h} - i \frac{cos((k-h) \pi)}{k-h} - \left( \frac{sin((k-h) (-\pi))}{k-h} - i \frac{cos((k-h) (-\pi))}{k-h}\right)
+  \end{split}
+\end{equation}
+
+Since $k,\ h \in \mathbb{N}$ it follows that $sin((k-h) \pi) = sin((k-h) (-\pi)) = 0$.
+\begin{equation}
+  \label{eq:24}
+  \begin{split}
+     i \frac{cos((k-h) (-\pi))}{k-h} -i \frac{cos((k-h) \pi)}{k-h} = 0
+  \end{split}
+\end{equation}
+as $cos((k-h) (-\pi)) = cos((k-h)\pi) = -1$.  
+
+
+\printbibliography
+\end{document} % Nothing gets printed after here 
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

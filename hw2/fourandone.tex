@@ -1,0 +1,101 @@
+\documentclass[11pt]{article}
+        \usepackage[T1]{fontenc} % Font styles
+	\usepackage[utf8]{inputenc} % Special characters "ä, ö, ü, ß" made possible
+        \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry} % page setup
+        \usepackage[doublespacing]{setspace} % set line spacing
+        \usepackage{multicol} % multiple columns: \begin{multicols}{number}....\end{multicols}
+        \usepackage{csquotes} % \blockquote{} command for long quotes
+	\usepackage[german]{babel} % Language (deutsch: ngerman)
+	\usepackage{amsmath} % Add formulas to document
+	\usepackage{graphicx} % Add graphics to document
+        \usepackage{cancel} % Cancel out terms in equations
+        \usepackage{xcolor} % Color output [see commands]
+        \usepackage{array} % keep equations aligned by inserting & at the alignment point
+        \usepackage{unicode-math}
+        \usepackage{longtable} % tables longer than one page
+        \usepackage{booktabs} % fancy tables from r
+        \usepackage{dcolumn} % also r tables
+        \usepackage{rotating} % rotated tables
+        \usepackage[toc,page]{appendix} % appendix
+        \usepackage{fancyhdr} % header and footer
+            \pagestyle{fancy}
+            \rhead{Chapter \leftmark}
+            \renewcommand\headrulewidth{1pt}
+            \setlength{\headheight}{14pt}
+	\usepackage[style=authoryear, backend=bibtex]{biblatex} % citation that works 
+            \bibliography{bibliography} % declare bibliography file name without .bib extention
+% Declaration of commands
+            \newcommand{\lagr}{nn\mathcal{L}} % \lagr for lagrangian [I need this all the time so makes sense to declare shortcut]
+            \newcommand\Ccancel[2][black]{\renewcommand\CancelColor{\color{#1}}\cancel{#2}} % cancel with colors \Ccancel[color]{...}; default: black
+
+\pagenumbering{arabic}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+
+\section{Question 1}
+Let $X = (X_1, X_2, ..., X_K)'$ be a random vector with mean zero and covariance matrix
+\begin{equation}
+  \label{eq:1}
+  \Gamma = \mathbf{E} XX'
+\end{equation}
+
+Assume $\Gamma$ is singular. Then there exists an eigenvalue $\lambda_1 = 0$ of $\Gamma$ with corresponding eigenvector $v_1 = (v_{11}, v_{12}, ..., v_{1K})'$. We know that
+\begin{equation}
+  \label{eq:2}
+  \Gamma v_1 = \lambda_1 v_1 = \mathbf{0_K}
+\end{equation}
+  
+where $\mathbf{0_K}$ denotes the zero vector of length $K$. Henceforth it will be denoted by $\mathbf{0}$. It is equivalent to say that
+\begin{equation}
+  \label{eq:3}
+  \mathbf{E} XX'v_1 = \mathbf{0}.
+\end{equation}
+
+We can multiply $v_1'$ from the left to get the variance of $v_1'X$.
+\begin{equation}
+\begin{split}
+  \label{eq:4}
+  \mathbf{E} v_1'XX'v_1 &= \mathbf{E} (v_1'X)(v_1'X)' = Var(v_1'X)\\
+  &= v_1'\mathbf{0} = 0
+\end{split}
+\end{equation}
+
+Since the variance is zero, we conclude that $v_1'X$ is deterministic and thus equal to a constant $d$. Thus we find
+\begin{equation}
+  \label{eq:5}
+  v_1'X = v_{11} X_1 + v_{12} X_2 + \dots + v_{1K} X_K = d
+\end{equation}
+
+We can rearrange (\ref{eq:5}) to
+
+\begin{equation}
+  \label{eq:6}
+  d - v_{1j} X_j = v_{11} X_1 + \dots + v_{1j-1} X_{j-1} + v_{1j+1}X_{j+1}+ \dots + v_{1K} X_K, \ j \in (2, K-1)
+\end{equation}
+Without loss of generality $j$ can be equal to $1$ or $K$ as well by deducting the appropriate $v$ and $X$ instead when moving from~(\ref{eq:5}) to (\ref{eq:6}). Now divide by $v_{1j}$ and define $\alpha_i := - \frac{v_{1i}}{v_{1j}}$ for $i = 1, ..., K$. It follows that $\alpha_j = -1$. Thus
+\begin{equation}
+  \label{eq:7}
+ X_j + \frac{d}{v_{1j}}  = \alpha_1 X_1 + \alpha_2 X_2 + \dots + \alpha_K X_K
+\end{equation}
+
+Now let $c := -\frac{d}{v_{1j}}$. Then
+\begin{equation}
+  \label{eq:8}
+  X_j = c + \alpha_1 X_1 + \alpha_2 X_2 + \dots + \alpha_{j-1} X_{j-1} + \alpha_{j+1} X_{j+1}+ \dots + \alpha_K X_K
+\end{equation}
+
+
+$
+\printbibliography
+\end{document} % Nothing gets printed after here 
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
