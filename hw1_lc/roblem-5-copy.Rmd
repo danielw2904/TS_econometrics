@@ -1,0 +1,152 @@
+---
+title: "Problem 5"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r,include=FALSE} 
+#SETUP FOR CODE
+rm(list=ls())
+library(readxl)
+library(forecast)
+library(tseries)
+library(TSA)
+setwd("/home/daniel/pCloudDrive/Aarhus/TS/Data")
+gdp<-read_excel("US_GDP.xlsx")
+```
+Looking at the PACF and the ACF
+```{r}
+lgdp<-ts(gdp$`Log US_GDP`, start=1947, frequency = 4)
+acf(lgdp, lag.max=262)
+pacf(lgdp)
+```
+The ACF plot shows sign of some business cycle correlation. We want to check if the process is stationary
+```{r}
+adf.test(lgdp)
+```
+So the augmented Dickey Fuller test yields a high p-value, and thus we cannot reject the null that there is a unit root. 
+This is also evident from exploring the plot of the series.
+```{r}
+ts.plot(lgdp)
+```
+
+This certainly does not looks stable. We try differencing the process
+```{r}
+difflgdp<-diff(lgdp)
+ts.plot(difflgdp)
+acf(difflgdp)
+adf.test(difflgdp)
+```
+We reject the Dickey Fuller of unit root with a very low p-value. The plot does look much more stationary as well. 
+
+We would like to model the process to see if the non-stationarity is caused by seasonality and/or trend. 
+
+```{r}
+#making a model
+trend <- 1:nrow(gdp)
+season <- seasonaldummy(lgdp)
+mod<-lm(lgdp~trend+season)
+summary(mod)
+# residuals are now demeaned, detrended, deseasoned data
+tryresid<-resid(mod)
+ts.plot(tryresid)
+acf(tryresid)
+pacf(tryresid)
+```
+
+The trend does explain some of the process, but the seasonality isn't very good at explaining the models. 
+```{r}
+adf.test(resid(mod))
+pp.test(resid(mod))
+```
+
+And the residuals still are a unit root process.
+We could also check the the different periods to see if the estimate is robust
+```{r}
+y1<-window(lgdp,1947,1957)
+y2<-window(lgdp,1957,1967)
+y3<-window(lgdp,1967,1977)
+y4<-window(lgdp,1977,1987)
+y5<-window(lgdp,1987,1997)
+y6<-window(lgdp,1997,2007)
+y7<-window(lgdp,2007,2012)
+
+ts.plot(y1)
+ts.plot(y2)
+ts.plot(y3)
+ts.plot(y4)
+ts.plot(y5)
+ts.plot(y6)
+ts.plot(y7)
+
+
+adf.test(y1)
+adf.test(y2)
+adf.test(y3)
+adf.test(y4)
+adf.test(y5)
+adf.test(y6)
+adf.test(y7)
+```
+It does seem like the unit root is present in all smaller intervals as well. If the process is detrended
+```{r}
+
+#Detrend, demeaned different periods
+#Model 1947-1957
+trend1 <- 1:length(y1)
+mod1<-lm(y1~trend1)
+summary(mod1)
+ts.plot(resid(mod1))
+adf.test(resid(mod1))
+pp.test(resid(mod1))
+
+#1957-1967
+trend2 <- 1:length(y2)
+mod2<-lm(y2~trend2)
+summary(mod2)
+ts.plot(resid(mod2))
+adf.test(resid(mod2))
+pp.test(resid(mod2))
+
+#1967-1977
+trend3 <- 1:length(y3)
+mod3<-lm(y3~trend3)
+summary(mod3)
+ts.plot(resid(mod3))
+adf.test(resid(mod3))
+pp.test(resid(mod3))
+
+#1977-1987
+trend4 <- 1:length(y4)
+mod4<-lm(y4~trend4)
+summary(mod4)
+ts.plot(resid(mod4))
+adf.test(resid(mod4))
+pp.test(resid(mod4))
+
+#1987-1997
+trend5 <- 1:length(y5)
+mod5<-lm(y5~trend5)
+summary(mod5)
+ts.plot(resid(mod5))
+adf.test(resid(mod5))
+pp.test(resid(mod5))
+
+#1997-2007
+trend6 <- 1:length(y6)
+mod6<-lm(y6~trend6)
+summary(mod6)
+ts.plot(resid(mod6))
+adf.test(resid(mod6))
+pp.test(resid(mod6))
+
+#2007-2012
+trend7 <- 1:length(y7)
+mod7<-lm(y7~trend7)
+summary(mod7)
+ts.plot(resid(mod7))
+adf.test(resid(mod7))
+pp.test(resid(mod7))
+```
+
+

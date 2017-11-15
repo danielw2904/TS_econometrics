@@ -1,0 +1,102 @@
+---
+title: "Appendix (A): Example of overdifferencing"
+output:
+  pdf_document: 
+    latex_engine: xelatex
+  html_notebook: default
+author: Mads Nielsen \& Daniel Winkler
+---
+
+Consider an AR(1) process that is defined as follows:
+
+$$
+y_t = 0.8 * y_{t-1} + \epsilon_t
+$$
+
+```{r}
+set.seed(123)
+t <- 1000
+ts <- matrix(NA, t, 1)
+eps <- rnorm(t)
+ts[1, ] <-eps[1]
+for(i in 2:t){
+  ts[i, ] <- 0.8 * ts[i-1, ] + eps[i]
+}
+```
+
+Lets look at the properties of this process:
+```{r}
+par(mfrow= c(2,2))
+ts.plot(ts, main = "AR(1) with phi = 0.8")
+acf(ts, main = "ACF")
+pacf(ts, main = "PACF")
+```
+
+Now lets consider what happens when differencing a general AR(1) process. We get:
+
+$$ 
+y_t - y_{t-1} = \phi y_{t-1} + \epsilon_t - y_{t-1}
+$$
+If we iterate backwards for $y_{t-1}$:
+$$
+= \phi y_{t-1} + \epsilon_t - (\phi y_{t-2} + \epsilon_{t-1})
+$$
+$$
+= \phi (y_{t-1} - y_{t-2}) + \epsilon_t - \epsilon_{t-1}
+$$
+Therefore:
+
+$$
+\Delta y_t = \phi\Delta y_{t-1} + \epsilon_t - \epsilon_{t-1}
+$$
+This is clearly an ARMA(1,1) with coefficient $\phi$ in the AR part and $1$ in the MA part. Thus we introduce a unit root in the MA part. Now consider the first difference of our process described above:
+
+```{r}
+dts <- diff(ts)
+par(mfrow = c(2,2))
+ts.plot(dts, main = "1st difference")
+acf(dts, main = "ACF")
+pacf(dts, main = "PACF")
+```
+
+We clearly see the introduction of the MA part in the partial autocorrelation function. In addition we can evaluate our theoretical result by simulating it using the same data as before. From the results below we can conclude that overdifferencing indeed created the ARMA(1,1) with $\phi$ set to $0.8$ and $\theta = -1$ we derived. 
+
+```{r, warning=FALSE, error=FALSE, message=FALSE}
+ts1 <- matrix(NA, (t-2), 1)
+#ts1[1:2, ] <- dts[1:2,]
+for(i in 3:t){
+  ts1[i-2, ] <- 0.8 * (ts[i-1, ]-ts[i-2,]) + eps[i] - eps[i-1]
+}
+
+par(mfrow = c(3,2))
+ts.plot(ts1, main = "Theoretical")
+ts.plot(dts, main = "Differenced")
+acf(ts1, main = "ACF")
+acf(dts, main = "ACF")
+pacf(ts1, main = "PACF")
+pacf(dts, main = "PACF")
+acf_theoretical <- acf(ts1, plot = FALSE)
+acf_diff <- acf(dts, plot = FALSE)
+
+library(knitr)
+kable(cbind(head(acf_theoretical$acf, 10), 
+            head(acf_diff$acf, 10)), 
+      digits = 3, col.names = c("Theoretical", "Differenced"), caption = "ACF")
+pacf_theoretical <- pacf(ts1, plot = FALSE)
+pacf_diff <- pacf(dts, plot = FALSE)
+kable(cbind(head(pacf_theoretical$acf, 10), 
+            head(pacf_diff$acf, 10)), 
+      digits = 3, col.names = c("Theoretical", "Differenced"), caption = "PACF")
+```
+
+
+We can also show that the ACF approaches $-1$ for lag $1$ as we keep differencing:
+
+```{r}
+diffs <- 300
+acl1store <- matrix(NA, diffs, 1)
+for(i in 1:diffs){
+acl1store[i, ] <- acf(diff(ts, differences = i), plot = FALSE)$acf[2]
+}
+ts.plot(acl1store, main = "ACF for lag one", xlab = "Degree of differencing", ylab = "")
+```
