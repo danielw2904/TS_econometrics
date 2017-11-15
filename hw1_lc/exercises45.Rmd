@@ -71,7 +71,7 @@ for(Ti in Ts){
 }
 ```
 
-The valus seem reasonably close to those in Maddala and Kim. 
+The valus seem reasonably close to those in Maddala and Kim. If we do not repeat multiple times and average the results are further appart as expected. These are asymptotic critical values given a unit root is present. In that case, as derived in class, the standard t-distribution cannot be used. Using the t-distribution would lead to overrejection of the unit root test. 
 
 ```{r}
 library(knitr)

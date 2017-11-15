@@ -3,6 +3,7 @@ title: "Problem 5"
 output:
   pdf_document: default
   html_notebook: default
+author: Mads Nielsen & Daniel Winkler
 ---
 ```{r,include=FALSE} 
 #SETUP FOR CODE
@@ -88,7 +89,7 @@ adf.test(y5)
 adf.test(y6)
 adf.test(y7)
 ```
-It does seem like the unit root is present in all smaller intervals as well. If the process is detrended
+It does seem like the unit root is present in all smaller intervals as well. If the process is detrended.
 ```{r}
 
 #Detrend, demeaned different periods
