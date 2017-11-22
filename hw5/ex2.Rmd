@@ -1,0 +1,32 @@
+---
+title: "Exercise 2"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r, message=FALSE, warning=FALSE}
+
+nums <- c(2,3,3,1,3,3,2,3,2,1,
+          3,3,2,1,1,3,3,3,3,1,
+          3,2,1,3,2,1,2,1,1,1,
+          3,1,2,3,3,3,2,2,2,2,
+          2,1,1,1,1,1,1,2,2,3)
+stopifnot(length(nums)==50)
+
+Gamma <- table(nums[-length(nums)], nums[-1])
+Gamma <- Gamma / rowSums(Gamma)
+
+ident <- diag(3)
+U <-   matrix(1, nrow = 3, ncol = 3)
+ones <- matrix(1, ncol = 3, nrow = 1)
+
+A <- ident - Gamma + U
+delta <- ones %*% solve(A)
+
+library(expm)
+Gamma%^%1e6
+delta
+
+```
+
