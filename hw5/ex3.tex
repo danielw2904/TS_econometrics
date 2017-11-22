@@ -1,0 +1,86 @@
+\documentclass[leqno]{article}
+\usepackage{verbatim}
+\usepackage[cmbase]{flexisym}
+\usepackage{color}
+\usepackage{breqn}
+\setkeys{breqn}{compact}
+
+\setlength{\textwidth}{180mm}
+\setlength{\oddsidemargin}{15mm}
+\addtolength{\oddsidemargin}{-1in}
+\setlength{\evensidemargin}{15mm}
+\addtolength{\evensidemargin}{-1in}
+
+\newcommand{\ifrac}[2]{\frac{#1}{#2}}
+\newcommand{\ifracd}[2]{\frac{#1}{#2}}
+\newcommand{\ifracn}[2]{\frac{#1}{#2}}
+\newcommand{\isubscript}[2]{{#1}_{#2}}
+\newcommand{\iexpt}[2]{{#1}^{#2}}
+\newcommand{\isqrt}[1]{\sqrt{#1}}
+\begin{document}
+\begin{verbatim}
+(%i1) Gamma: matrix([\gamma_1, 1-\gamma_1], [1-\gamma_2, \gamma_2]);
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{\gamma_1&\linebreak[0]1-\gamma_1\cr 1-\gamma_2&\linebreak[0]\gamma_2\cr}\end{dmath}
+
+\begin{verbatim}
+(%i2) i: ident(2);
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{1&\linebreak[0]0\cr 0&\linebreak[0]1\cr }\end{dmath}
+
+\begin{verbatim}
+(%i3) U: matrix([1,1],[1,1]);
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{1&\linebreak[0]1\cr 1&\linebreak[0]1\cr }\end{dmath}
+
+\begin{verbatim}
+(%i4) A: i - Gamma + U;
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{2-\gamma_1&\linebreak[0]\gamma_1\cr \gamma_2&\linebreak[0]2-\gamma_2\cr }\end{dmath}
+
+\begin{verbatim}
+(%i5) B: invert(A);
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{\ifrac{2-\gamma_2}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}&\linebreak[0]-\ifracd{\gamma_1}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}\cr -\ifracd{\gamma_2}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}&\linebreak[0]\ifrac{2-\gamma_1}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}\cr }\end{dmath}
+
+\begin{verbatim}
+(%i6) o: matrix([1,1]);
+
+\end{verbatim}
+
+\begin{dmath}
+ \pmatrix{1&\linebreak[0]1\cr }\end{dmath}
+
+\begin{verbatim}
+(%i7) o.B;
+
+\end{verbatim}
+
+\begin{dmath}
+\delta =  \pmatrix{\ifrac{2-\gamma_2}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}-\ifracd{\gamma_2}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}&\linebreak[0]\ifrac{2-\gamma_1}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}-\ifracd{\gamma_1}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}\cr }\end{dmath}
+
+\begin{dmath}
+  \delta = \pmatrix{\ifrac{2-2\gamma_2}{\left(2-\gamma_1\right)\,\left(2-2\gamma_2\right)-\gamma_1\,\gamma_2}&\linebreak[0]\ifrac{2-2\gamma_1}{\left(2-\gamma_1\right)\,\left(2-\gamma_2\right)-\gamma_1\,\gamma_2}\cr} 
+\end{dmath}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
