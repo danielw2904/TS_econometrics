@@ -5,80 +5,7 @@ output:
   html_notebook: default
 author: Mads Nielsen & Daniel Winkler
 ---
-First we write a loop that generates the necessary values for a. and c. For the comparison of the quantiles we repeat the calculation 10 times in order to gain accuracy and still keep computation time reasonable. 
 
-```{r eval=FALSE}
-N <- 10000
-set.seed(1234)
-reps <- 10
-ntot <- reps * N
-
-Ts <- c(25, 50, 100, 250, 500)
-t25_store <- matrix(NA, Ts[1], 1)
-t50_store <- matrix(NA, Ts[2], 1)
-t100_store <- matrix(NA, Ts[3], 1)
-t250_store <- matrix(NA, Ts[4], 1)
-t500_store <- matrix(NA, Ts[5], 1)
-q25_store <- matrix(NA, reps, 2)
-q50_store <- matrix(NA, reps, 2)
-q100_store <- matrix(NA, reps, 2)
-q250_store <- matrix(NA, reps, 2)
-q500_store <- matrix(NA, reps, 2)
-
-for(Ti in Ts){
-  t_store <- matrix(NA, N, 1)
-  quantile_store <- matrix(NA, reps, 2)
-  for(qrep in 1:reps){
-    for(nrep in 1:N){
-      # Draw randomness
-      eps <- rnorm(Ti)
-      # Generate Data
-      Y <- matrix(NA, Ti, 1)
-      Y[1,1] <- eps[1]
-      for (irep in 2:Ti){
-        Y[irep, 1] <- Y[irep-1,1] + eps[irep] 
-      }
-      # Generate first difference
-      dY <- matrix(NA, (Ti-1), 1)
-      for (jrep in 1:(Ti-1)){
-        dY[jrep, 1] <- Y[jrep + 1, 1] - Y[jrep, 1]
-      }
-      # Adjust data length for regression
-      Yreg <- Y[1:nrow(dY), 1]
-      # Do the regression to obtain t-test 
-      mod <- lm(dY~0+Yreg)
-      t_store[nrep, 1] <- summary(mod)$coefficients[3]
-    }
-    quantile_store[qrep, ] <- quantile(t_store, probs = c(0.01, 0.05))
-  }
-  if(Ti == 25){
-    t25_store <- t_store
-    q25_store <- quantile_store
-  }else if(Ti == 50){
-    t50_store <- t_store
-    q50_store <- quantile_store
-  }else if(Ti == 100){
-    t100_store <- t_store
-    q100_store <- quantile_store
-  }else if(Ti == 250){
-    t250_store <- t_store
-    q250_store <- quantile_store
-  }else if(Ti == 500){
-    t500_store <- t_store
-    q500_store <- quantile_store
-  }
-  print(Ti)
-}
-```
-
-The valus seem reasonably close to those in Maddala and Kim. If we do not repeat multiple times and average the results are further appart as expected. These are asymptotic critical values given a unit root is present. In that case, as derived in class, the standard t-distribution cannot be used. Using the t-distribution would lead to overrejection of the unit root test. 
-
-```{r}
-library(knitr)
-load("cvals.Rdata")
-row.names(cvals) <- c("25", "50", "100", "250", "500")
-kable(cvals, col.names = c("1%", "5%"))
-```
 
 For c.1) and c.2) only 5 repetitions are considered because of computation time. Furthermore, N is reduced to 5000.
 
@@ -111,7 +38,7 @@ for(Ti in Ts){
       Y <- matrix(NA, Ti, 1)
       Y[1,1] <- eps[1]
       for (irep in 2:Ti){
-        Y[irep, 1] <- 5 + Y[irep-1,1] + eps[irep] 
+        Y[irep, 1] <- Y[irep-1,1] + eps[irep] 
       }
       # Generate first difference
       dY <- matrix(NA, (Ti-1), 1)
@@ -148,8 +75,9 @@ for(Ti in Ts){
 
 
 ```{r}
-# cvals <- rbind(colMeans(q25_store), colMeans(q50_store), colMeans(q100_store), colMeans(q250_store), colMeans(q500_store))
-# save(cvals, file = "cvalsConst.Rdata")
+library(knitr)
+#cvals <- rbind(colMeans(q25_store), colMeans(q50_store), colMeans(q100_store), colMeans(q250_store), colMeans(q500_store))
+#save(cvals, file = "cvalsConst.Rdata")
 load("cvalsConst.Rdata")
 row.names(cvals) <- c("25", "50", "100", "250", "500")
 kable(cvals, col.names = c("1%", "5%"))
@@ -188,7 +116,7 @@ for(Ti in Ts){
       Y <- matrix(NA, Ti, 1)
       Y[1,1] <- eps[1] + trend[1]
       for (irep in 2:Ti){
-        Y[irep, 1] <- 5 + trend[irep] + Y[irep-1,1] + eps[irep] 
+        Y[irep, 1] <- Y[irep-1,1] + eps[irep] 
       }
       # Generate first difference
       dY <- matrix(NA, (Ti-1), 1)

@@ -1,0 +1,228 @@
+\documentclass[11pt]{article}
+        \usepackage[T1]{fontenc} % Font styles
+	\usepackage[utf8]{inputenc} % Special characters "ä, ö, ü, ß" made possible
+        \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry} % page setup
+        \usepackage[doublespacing]{setspace} % set line spacing
+        \usepackage{multicol} % multiple columns: \begin{multicols}{number}....\end{multicols}
+        \usepackage{csquotes} % \blockquote{} command for long quotes
+\usepackage{amssymb}
+	\usepackage[german]{babel} % Language (deutsch: ngerman)
+	\usepackage{amsmath} % Add formulas to document
+	\usepackage{graphicx} % Add graphics to document
+        \usepackage{cancel} % Cancel out terms in equations
+        \usepackage{xcolor} % Color output [see commands]
+        \usepackage{array} % keep equations aligned by inserting & at the alignment point
+        \usepackage{longtable} % tables longer than one page
+        \usepackage{booktabs} % fancy tables from r
+        \usepackage{dcolumn} % also r tables
+        \usepackage{rotating} % rotated tables
+        \usepackage[toc,page]{appendix} % appendix
+        \usepackage{fancyhdr} % header and footer
+            \pagestyle{fancy}
+            \rhead{Mads Nielsen \& Daniel Winkler}
+            \renewcommand\headrulewidth{1pt}
+            \setlength{\headheight}{14pt}
+	\usepackage[style=authoryear, backend=bibtex]{biblatex} % citation that works 
+            \bibliography{bibliography} % declare bibliography file name without .bib extention
+% Declaration of commands
+            \newcommand{\lagr}{nn\mathcal{L}} % \lagr for lagrangian [I need this all the time so makes sense to declare shortcut]
+            \newcommand\Ccancel[2][black]{\renewcommand\CancelColor{\color{#1}}\cancel{#2}} % cancel with colors \Ccancel[color]{...}; default: black
+
+\pagenumbering{arabic}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+\setcounter{section}{2}
+\section{Question 3}
+\label{sec:question-3}
+
+
+\subsection{Stationary Distribution}
+\label{sec:stat-distr}
+
+The stationary distribution is defined such that
+\begin{equation}
+  \label{eq:11}
+  \mathbf{\delta}\mathbf{\Gamma}=\mathbf{\delta}
+\end{equation}
+In the case of two states we get three equations:
+\begin{equation}
+  \label{eq:12}
+  \begin{split}
+    \delta_1 \gamma_1 + \delta_2 (1-\gamma_2) = \delta_1\\
+    \delta_1 (1-\gamma_1) + \delta_2 \gamma_2 = \delta_2\\
+    \delta_1 + \delta_2 = 1
+  \end{split}
+\end{equation}
+
+Therefore, $\delta_2 = 1- \delta_1$.
+\begin{equation}
+  \label{eq:13}
+  \begin{split}
+    \delta_1 \gamma_1 + (1-\delta_1) (1-\gamma_2) = \delta_1\\
+    \delta_1 (1-\gamma_1) + (1-\delta_1) \gamma_2 = 1-\delta_1\\
+  \end{split}
+\end{equation}
+
+\begin{equation*}
+  \delta_1 \gamma_1 + 1-\gamma_2 -\delta_1 + \delta_1 \gamma_2 = \delta_1
+\end{equation*}
+
+\begin{equation*}
+  \delta_1 (\gamma_1 -1 + \gamma_2) + 1-\gamma_2 = \delta_1
+\end{equation*}
+\begin{equation*}
+  1-\delta_1 (\gamma_1 -1 + \gamma_2)  = \frac{1-\gamma_2}{\delta_1}
+\end{equation*}
+\begin{equation}
+  \label{eq:14}
+  \delta_1 = \frac{1-\gamma_2}{2-\gamma_1-\gamma_2}
+\end{equation}
+\begin{equation}
+  \label{eq:15}
+  \delta_2 = \frac{\delta_1 (1-\gamma_1)}{1-\gamma_2}
+\end{equation}
+
+\subsection{Conditional Density} % there is some stuff with titlepage setup around but I find this to be more convenient as you can do whatever you want here. Add date/time, Authornames, space...
+
+We are looking for:
+\begin{equation}
+  \label{eq:1}
+  P(Y_t=y_t|Y_{1:t-1}=y_{1:t-1})
+\end{equation}
+This can be rewritten as:
+\begin{equation}
+  \label{eq:2}
+  \frac{P(Y_t=y_t, Y_{1:t-1}=y_{1:t-1})}{P(Y_{1:t-1}=y_{1:t-1})} 
+\end{equation}
+
+We can convert the numerator into conditional probabilities if we sum over all possible states times the probability of observing this combination of states in times $t$ and $t-1$
+
+\begin{equation}
+  \label{eq:3}
+  \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t, Y_{1:t-1}=y_{1:t-1}|S_t=j, S_{t-1}=i)P(S_t=j, S_{t-1} = i)}{P(Y_{1:t-1}=y_{1:t-1})}
+\end{equation}
+
+We have defined the last part in the numerator in the transition matrix $\Gamma$ with elements $\gamma_{ij}$ in row $i$ and column $j$.
+Given the contemporary states the realizations of $Y_t$ and $Y_{t-1}$ are independent of each other and of the previous/future states. Thus, we can rewrite
+\begin{equation}
+  \label{eq:4}
+  \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t|S_t=j) P(Y_{1:t-1}=y_{1:t-1}|S_{t-1}=i) \gamma_{ij}}{P(Y_{1:t-1}=y_{1:t-1})}
+\end{equation}
+
+We will take a closer look at $ \sum_{i=1}^2 P(Y_{1:t-1}=y_{1:t-1}|S_{t-1}=i)$. This can be rewritten as:
+\begin{equation}
+  \label{eq:5}
+ \sum_{i=1}^2 \frac{P(Y_{1:t-1}=y_{1:t-1},S_{t-1}=i)}{P(S_{t-1} = i)}
+\end{equation}
+Inserting this back into equation (\ref{eq:4}):
+\begin{equation}
+  \label{eq:6}
+  \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t|S_t=j) P(Y_{1:t-1}=y_{1:t-1},S_{t-1}=i) \gamma_{ij}}{\sum_{i=1}^2 P(Y_{1:t-1}=y_{1:t-1}) P(S_{t-1} = i)}
+\end{equation}
+as we sum over all possible $i$ we can rewrite the denominator as:
+\begin{equation}
+  \label{eq:7}
+    \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t|S_t=j) P(Y_{1:t-1}=y_{1:t-1},S_{t-1}=i) \gamma_{ij}}{\sum_{i=1}^2 P(Y_{1:t-1}=y_{1:t-1}|S_{t-1} = i) P(S_{t-1} = i)}
+\end{equation}
+
+This means the denominator is simply the joint probability of $Y_{1:t-1}=y_{1:t-1}$ and $S_{t-1} = i$. 
+\begin{equation}
+  \label{eq:8}
+   \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t|S_t=j) P(Y_{1:t-1}=y_{1:t-1},S_{t-1}=i) \gamma_{ij}}{\sum_{i=1}^2 P(Y_{1:t-1}=y_{1:t-1}, S_{t-1} = i)}
+ \end{equation}
+
+ Given the definition of the forward probabilities we observe that the joint probabilities in the numerator and denominator are just the i-th element of the vector $\alpha$ of forward probabilities.
+\begin{equation}
+  \label{eq:9}
+   \frac{\sum_{j=1}^2 \sum_{i=1}^2 P(Y_t=y_t|S_t=j) \alpha_i \gamma_{ij}}{\sum_{i=1}^2 \alpha_i}
+ \end{equation}
+
+We know that for each state $P(Y_t|S_t=j) = N(\mu_j,\sigma_j)$. 
+
+\subsection{Covariance stationarity}
+\label{sec:covar-stat}
+
+For the process to be covariance stationary we need both the expected value and the covariance to be independent of time.
+We know that $Y_t|S_t=j \sim N(\mu_j, \sigma_j)$. Thus, if we marginalize out the states we get:
+\begin{equation}
+  \label{eq:16}
+\sum_{j=1}^2 P(S_t=j) N(\mu_j, \sigma_j) = P(S_t=1) N(\mu_1, \sigma_1) + P(S_t=2) N(\mu_2, \sigma_2)
+\end{equation}
+We use the stationary distribution defined above and plug in $\mathbf{\delta}$:
+\begin{equation}
+  \label{eq:17}
+  \delta_1 N(\mu_1, \sigma_1) + \delta_2 N(\mu_2, \sigma_2)
+\end{equation}
+Taking expectations yields:
+\begin{equation}
+  \label{eq:18}
+  \delta_1 \mathbb{E}[N(\mu_1, \sigma_1)] + \delta_2 \mathbb{E}[N(\mu_2, \sigma_2)] = \delta_1 \mu_1 + \delta_2 \mu_2
+\end{equation}
+which is clearly independent of time.
+
+For the covariance we need to evaluate $\mathbb{E}[Y_tY_{t-s}]$.
+We first use the same property as in 3.b. to get distributions conditional on the states. And the the properties of joint probabilities being equal to conditional times marginal
+
+\begin{align*}
+  \label{eq:20}
+  \sum_{i=1}^2 \sum_{j=1}^2 \mathbb{E}[Y_tY_{t-s}|S_{t-s} = i, S_t = j] P(S_t=j, S_{t-s} = i)\\
+  =   \sum_{i=1}^2 \sum_{j=1}^2 \mathbb{E}[Y_tY_{t-s}|S_{t-s} = i, S_t = j] P(S_t=j| S_{t-s} = i) P(S_{t-s} = i)
+\end{align*}
+Plugging in definitions:
+\begin{align*}
+  \sum_{i=1}^2 \sum_{j=1}^2 \mathbb{E}[Y_tY_{t-s}|S_{t-s} = i, S_t = j] [\Gamma^s]_{ij} \delta_i
+\end{align*}
+Now again by the same argument as above we can rewrite the first part:
+\begin{align*}
+  \sum_{i=1}^2 \sum_{j=1}^2 \mathbb{E}[Y_t|S_t=j] \mathbb{E}[Y_{t-s}|S_{t-s} = i] [\Gamma^s]_{ij} \delta_i\\
+  =   \sum_{i=1}^2 \sum_{j=1}^2 \mu_j \mu_i [\Gamma^s]_{ij} \delta_i
+\end{align*}
+In order to get the covariance we need to deduct $\mathbb{E}[Y_t]\mathbb{E}[Y_{t-s}]$. Since the expected value is independent of time as we have derived above this is:
+\begin{align*}
+  \sum_{i=1}^2 \sum_{j=1}^2 \mu_i\mu_j\delta_i\delta_j = (\delta_1\mu_1 + \delta_2 \mu_2)^2
+\end{align*}
+Thus,
+\begin{align}
+  cov(Y_t, Y_{t-s})  =   \sum_{i=1}^2 \sum_{j=1}^2 \mu_j \mu_i [\Gamma^s]_{ij} \delta_i - (\delta_1\mu_1 + \delta_2 \mu_2)^2
+\end{align}
+which is also independent of time.
+
+\subsection{Autocorrelation function}
+\label{sec:autoc-funct}
+
+In order to calculate the autocorrelation function we divide the covariance by the variance of $Y_t = \mathbb{E}[Y_t^2] - \mathbb{E}[Y_t]^2$. The latter part is just:
+\begin{align}
+ \mathbb{E}[Y_t]^2 = (\delta_1\mu_1 + \delta_2 \mu_2)^2
+\end{align}
+For the first part we use the fact that the second moment of a normal distribution is:
+\begin{equation}
+  \sigma^2 + \mu^2
+\end{equation}
+and multiply by the probability of being in a certain state.
+
+\begin{equation}
+  \delta_1(\sigma_1^2 + \mu_1^2) + \delta_2(\sigma_2^2 + \mu_2^2)
+\end{equation}
+Thus the autocorrelation is given by
+\begin{equation}
+  \frac{\sum_{i=1}^2 \sum_{j=1}^2 \mu_j \mu_i [\Gamma^s]_{ij} \delta_i - (\delta_1\mu_1 + \delta_2 \mu_2)^2}{\delta_1(\sigma_1^2 + \mu_1^2) + \delta_2(\sigma_2^2 + \mu_2^2) - (\delta_1\mu_1 + \delta_2 \mu_2)^2}
+\end{equation}
+
+\begin{equation}
+\rho(s) =  \frac{\sum_{i=1}^2 \sum_{j=1}^2 \mu_j \mu_i [\Gamma^s]_{ij} \delta_i}{\delta_1(\sigma_1^2 + \mu_1^2) + \delta_2(\sigma_2^2 + \mu_2^2)} -1
+\end{equation}
+
+
+\printbibliography
+\end{document} % Nothing gets printed after here 
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

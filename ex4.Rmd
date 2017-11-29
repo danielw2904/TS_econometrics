@@ -1,0 +1,123 @@
+---
+title: "Exercise 4"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+```{r}
+autocorr <- function(mu, sigma, Gamma, k){
+  require(expm)
+  M <- diag(mu)
+  mu <- as.matrix(mu, ncol = 1)
+  ident <- diag(nrow(Gamma))
+  U <-   matrix(1, nrow = 2, ncol = 2)
+  ones <- matrix(1, ncol = 2, nrow = 1)
+  A <- ident - Gamma + U
+  delta <- ones %*% solve(A)
+  Delta <- matrix(c(delta[1], delta[1], delta[2], delta[2]), byrow = T, nrow = 2)
+  VarX <- delta[1] * (mu[1]^2 + sigma[1]^2) + (1-delta[1])  * (mu[2]^2 + sigma[2]^2) - (delta%*%mu)^2
+ rho <- as.numeric((delta %*% M %*% (Gamma%^%k) %*% mu) - (delta %*%   mu)^2)/as.numeric(VarX) 
+  return(rho)
+}
+
+# Define Steps ahead
+k <- 1
+# Define properties of the conditional distributions
+mu <- c(1, 5)
+sigma <- c(0.5, 2)
+
+# Define transition probabilities
+p11 <- 0.1
+p12 <- 1-p11
+
+p21 <- 0.5
+p22 <- 1-p21
+
+Gamma <- matrix(c(p11, p12, p21, p22), byrow = TRUE, ncol = 2)
+
+autocorr(mu, sigma, Gamma, 1)
+```
+
+```{r}
+
+
+mu1 <- 1
+sig1 <- 0.5
+
+mu2 <- 5
+sig2 <- 0.5
+
+# Starting value for state (result should be independent)
+S <- "b"
+# How often should this be done
+nsave <- 10000
+Sstore <- matrix(NA, nsave)
+ProbStore <- matrix(NA, 2, nsave)
+Ystore <- matrix(NA,nrow =  nsave, ncol = 1)
+Ymeanstore <- matrix(NA, nrow = nsave, ncol = 1)
+for (i in 1:nsave){
+  if (S == "b"){
+    Y <- rnorm(1, mu2, sig2)
+    S <- sample(c("a"
+                  , "b"), size = 1, prob = c(p21, p22))
+  }else if (S == "a"){
+    Y <- rnorm(1, mu1, sig1)
+    S <- sample(c("a", "b"), size = 1, prob = c(p11, p12))
+  }
+  
+  Ystore[i,1] <- Y
+  Sstore[i, ] <- S
+  Ymeanstore[i,1] <- sum(Ystore, na.rm = TRUE)/i
+  ProbStore[1, i] <- sum(Sstore=="a", na.rm = TRUE)/i
+  ProbStore[2, i] <- sum(Sstore=="b", na.rm = TRUE)/i}
+
+plot(ProbStore[1,],type = "l")
+lines(ProbStore[2,],type = "l", col = "red")
+
+plot(density(Ystore, bw = 0.05))
+hist(Ystore)
+plot(Ymeanstore, type = "l")
+# Final Probability with 500 burn-in
+Sstore <- Sstore[500:nsave,]
+sum(Sstore=="a")/(nsave-500)
+sum(Sstore=="b")/(nsave-500)
+
+# Theoretical results with transition matrix Gamma
+Gamma <- matrix(c(p11, p12, p21, p22), nrow = 2, byrow = TRUE)
+
+ident <- diag(nrow(Gamma))
+U <-   matrix(1, nrow = 2, ncol = 2)
+ones <- matrix(1, ncol = 2, nrow = 1)
+A <- ident - Gamma + U
+delta <- ones %*% solve(A)
+delta
+
+# Testing for independence of starting point
+library(expm)
+start1 <- matrix(c(0, 1), nrow = 1)
+start2 <- matrix(c(1, 0), nrow = 1)
+
+p11 <- 0.1
+p12 <- 1-p11
+
+p21 <- 0.5
+p22 <- 1-p21
+nahead <- 20
+chain1 <- sapply(1:nahead,function(t) start1 %*% (Gamma%^%t))
+chain2 <- sapply(1:nahead,function(t) start2 %*% (Gamma%^%t))
+
+plot(chain1[1,], type = "l", lwd = 4, col = "yellow")
+lines(chain2[1,], col = "red", type = "c")
+
+```
+
+```{r}
+muc <- delta[1] * mu1 + delta[2] * mu2
+varc <- delta[1] * (mu[1]^2 + sigma[1]^2) + (1-delta[1])  * (mu[2]^2 + sigma[2]^2) - (delta%*%mu)^2
+
+plot(function(x)delta[1]*dnorm(x,mu1, sig1) + delta[2] * dnorm(x, mu2, sig2), xlim = c(-3, 10))
+
+
+```
+
